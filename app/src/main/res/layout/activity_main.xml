@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/night"
+    android:alpha="0.75"
+    >
+
+
+    <TextView
+        android:id="@+id/headingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:padding="20dp"
+        android:text="Fingerprint Authentication"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/fingerprintImage"
+        android:layout_marginTop="40dp"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:layout_below="@+id/headingLabel"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/fingerprint_icon"
+        android:tint="#ffffff"
+        />
+
+    <TextView
+        android:id="@+id/paraLabel"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fingerprintImage"
+        android:layout_centerHorizontal="true"
+        android:padding="25dp"
+        android:text="Place your Finger on the Scanner to Proceed"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/morseButton"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:layout_marginTop="480dp"
+        android:layout_centerHorizontal="true"
+        android:onClick="morseCodeAuthentication"
+        android:text="Morse Code"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/morseLabel"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/morseButton"
+        android:layout_centerHorizontal="true"
+        android:padding="25dp"
+        android:text="Enter Morse Code by clicking button."
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textAlignment="center" />
+</RelativeLayout>
