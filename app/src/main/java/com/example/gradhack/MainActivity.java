@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
-import android.media.Image;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
@@ -17,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -26,13 +26,13 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.crypto.Cipher;
@@ -47,14 +47,18 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mFingerprintImage;
     private TextView mParaLabel;
     private Button morseButton;
-
+    private Long lastDown,lastDuration;
+    private String passwordMorseCode = "...-..-.-";   //Assuming user is already registered. Morse translates to SDK.
+    private String temp;
+    private int count = 0;
+    private int morseLoginAttemptCount = 0;
+    protected ArrayList<String> morseCode;
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
 
     private KeyStore keyStore;
     private Cipher cipher;
     private String KEY_NAME = "AndroidKey";
-    public int morseCount = 0;
     public Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,20 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mFingerprintImage = (ImageView) findViewById(R.id.fingerprintImage);
         mParaLabel = (TextView) findViewById(R.id.paraLabel);
         morseButton = findViewById(R.id.morseButton);
-
-
-        /*
-        //tts engine
-        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR){
-                    tts.setLanguage(Locale.US);
-                    tts.speak("Welcome to OTP generator",TextToSpeech.QUEUE_FLUSH,null);
-                }
-            }
-        });
-        */
+        morseCode = new ArrayList<>();
 
         // Check 1: Android version should be greater or equal to Marshmallow
         // Check 2: Device has Fingerprint Scanner
@@ -96,28 +87,23 @@ public class MainActivity extends AppCompatActivity {
             if(!fingerprintManager.isHardwareDetected()){
 
                 mParaLabel.setText("Fingerprint Scanner not detected in Device");
-                //tts.speak("Fingerprint Scanner not detected in Device", TextToSpeech.QUEUE_FLUSH,null);
                 initAndSpeak("Fingerprint Scanner not detected in Device");
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED){
 
                 mParaLabel.setText("Permission not granted to use Fingerprint Scanner");
-                //tts.speak("Permission not granted to use Fingerprint Scanner", TextToSpeech.QUEUE_FLUSH,null);
                 initAndSpeak("Permission not granted to use Fingerprint Scanner");
             } else if (!keyguardManager.isKeyguardSecure()){
 
                 mParaLabel.setText("Add Lock to your Phone in Settings");
-                //tts.speak("Add Lock to your Phone in Settings", TextToSpeech.QUEUE_FLUSH,null);
                 initAndSpeak("Add Lock to your Phone in Settings");
             } else if (!fingerprintManager.hasEnrolledFingerprints()){
 
                 mParaLabel.setText("You should add atleast 1 Fingerprint to use this Feature");
-                //tts.speak("You should add atleast 1 Fingerprint to use this Feature", TextToSpeech.QUEUE_FLUSH,null);
                 initAndSpeak("You should add atleast 1 Fingerprint to use this Feature");
             } else {
 
                 mFingerprintImage.setImageResource(R.drawable.fingerprint_icon);
                 mParaLabel.setText("Place your Finger on Scanner to Access the App.");
-                //tts.speak("Place your Finger on Scanner to Access the App.", TextToSpeech.QUEUE_FLUSH,null);
                 initAndSpeak("Welcome to OTP generator!! Authenticate using Fingerprint scanner or using Morse Code.");
                 generateKey();
 
@@ -131,6 +117,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+
+        //Getting Morse Code password as input
+        inputMorseCode();       //Taking first input
+
+
 
     }
 
@@ -147,16 +138,72 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void morseCodeAuthentication(View view){
-        if(morseCount == 6){
-            Intent intent = new Intent(this,HomeActivity.class);
-            morseCount = 0;
-            startActivity(intent);
-        }
-        else{
-            morseCount++;
+    protected void inputMorseCode(){
+        for(int i=0;i<9;i++){
+            morseButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    String s;
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        lastDown = System.currentTimeMillis();
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if(count<9){
+                            count++;
+                            lastDuration = System.currentTimeMillis() - lastDown;
+                            //timeLabel.setText("Button pressed for " + Long.toString(lastDuration) + " ms");
+                            if(lastDuration<=250){
+                                s=".";
+                            }else{
+                                s="-";
+                            }
+                            morseCode.add(s);
+                        }
+                        if(count==9){
+                            //morseCodeLabel.setText(morseCode.toString());
+                            checkMorseCodePassword();
+
+                        }
+                        else {
+                            Log.e("endMsg:","finishing MainActivity");
+                            //finish();
+                        }
+                    }
+
+                    return true;
+                }
+            });
         }
     }
+
+    protected void checkMorseCodePassword(){
+        temp = "";
+        for(String str:morseCode){
+            temp = temp + str;
+        }
+        if(passwordMorseCode.equals(temp)){
+            morseLoginAttemptCount = 0;
+            morseCode.clear();
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
+            initAndSpeak("Unauthorized User");
+            morseLoginAttemptCount++;
+            count = 0;
+            Log.e(" morseCode before ",morseCode.toString());
+            morseCode.clear();
+            Log.e(" morseCode after ",morseCode.toString());
+            if(morseLoginAttemptCount < 3){
+                inputMorseCode();
+            }else{
+                initAndSpeak("Unauthorized User. Too many attempts. Try again Later. ");
+                Log.e(" morseCode ","too many attempts,try again later");
+                morseLoginAttemptCount = 0;
+            }
+        }
+    }
+
+
     @TargetApi(Build.VERSION_CODES.M)
     private void generateKey() {
 

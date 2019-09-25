@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeActivity"
-    android:background="@drawable/night"
+    android:background="@drawable/background"
     android:alpha="0.75"
     >
 
@@ -13,10 +13,11 @@
         android:id="@+id/otp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="90dp"
-        android:layout_marginTop="225dp"
-        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:text="641045"
         android:textAllCaps="false"
-        android:textSize="65dp" />
+        android:textColor="@android:color/black"
+        android:textSize="85dp" />
 
 </RelativeLayout>

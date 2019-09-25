@@ -37,7 +37,7 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     @Override
     public void onAuthenticationError(int errorCode, CharSequence errString) {
         this.update("There was an Authentication Error. " + errString, false);
-        initAndSpeak("There was an Authentication Error, "+ errString);
+        //initAndSpeak("There was an Authentication Error, "+ errString);
     }
 
     @Override
@@ -56,6 +56,8 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
         Intent intent = new Intent(context,HomeActivity.class);
         context.startActivity(intent);
+        /*MainActivity mainActivity = new MainActivity();
+        mainActivity.finish();*/
     }
 
 
@@ -65,9 +67,9 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         paraLabel.setText(s);
 
         if(b == false){
-            paraLabel.setTextColor(Color.WHITE);
+            paraLabel.setTextColor(Color.BLACK);
         } else {
-            paraLabel.setTextColor(Color.WHITE);
+            paraLabel.setTextColor(Color.BLACK);
             imageView.setImageResource(R.drawable.done);
         }
 

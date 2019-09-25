@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@drawable/night"
+    android:background="@drawable/background"
     android:alpha="0.75"
     >
 
@@ -18,9 +18,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:padding="20dp"
-        android:text="Fingerprint Authentication"
-        android:textColor="@android:color/white"
-        android:textSize="24sp" />
+        android:text="User Authentication"
+        android:textColor="@android:color/black"
+        android:textSize="30sp" />
 
     <ImageView
         android:id="@+id/fingerprintImage"
@@ -30,7 +30,7 @@
         android:layout_below="@+id/headingLabel"
         android:layout_centerHorizontal="true"
         android:src="@drawable/fingerprint_icon"
-        android:tint="#ffffff"
+        android:tint="#000000"
         />
 
     <TextView
@@ -42,24 +42,22 @@
         android:layout_centerHorizontal="true"
         android:padding="25dp"
         android:text="Place your Finger on the Scanner to Proceed"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="24sp"
         android:textAlignment="center" />
 
     <Button
         android:id="@+id/morseButton"
-        android:layout_width="150dp"
-        android:layout_height="80dp"
+        android:layout_width="350dp"
+        android:layout_height="140dp"
         android:gravity="center"
-        android:layout_marginTop="480dp"
+        android:layout_marginTop="450dp"
         android:layout_centerHorizontal="true"
-        android:onClick="morseCodeAuthentication"
         android:text="Morse Code"
-        android:textSize="20sp"/>
+        android:textSize="40sp"/>
 
     <TextView
         android:id="@+id/morseLabel"
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/morseButton"

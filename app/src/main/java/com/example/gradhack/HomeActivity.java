@@ -36,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
         otp = (TextView) findViewById(R.id.otp);
-        initAndSpeak("Welcome Sourabh !!");
+        //initAndSpeak("Welcome Sourabh !!");
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         String passcode;
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
         Map<String, String> params = new HashMap();
-        params.put("USERID", "5629290");
+        params.put("USERID", "5629291");
         JSONObject parameters = new JSONObject(params);
 
         final JsonObjectRequest objectRequest = new JsonObjectRequest(
@@ -67,8 +67,14 @@ public class HomeActivity extends AppCompatActivity {
                             Log.e("Rest response", response.toString());
                             String passcode = response.get("PASSCODE").toString();
                             Log.e("passcode", passcode);
+                            String s="";
+                            for(int i=0;i<passcode.length();i++){
+                                s += passcode.charAt(i) + " ";
+                            }
+                            Log.e("s",s);
+                            initAndSpeak("OTP is "+s);
                             otp.setText(passcode);
-                            initAndSpeak("OTP is "+passcode);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -98,4 +104,17 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onPause(){
+        if(tts != null){
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed(){
+        this.finishAffinity();
+    }
 }
